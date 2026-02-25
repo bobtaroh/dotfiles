@@ -10,12 +10,12 @@ My personal configuration files.
 To manage your configuration files, create a symbolic link from the home directory to this repository.
 
 ### Usage
-```bash
+```zsh
 ln -s [Path to source file in dotfiles] [Path to target location]
 ```
 
 ### Examples
-```bash
+```zsh
 # zsh
 ln -s ~/dotfiles/.zshrc ~/.zshrc
 
