@@ -1,0 +1,40 @@
+# =========================
+# Appearance 
+# =========================
+font-family = "BlexMono Nerd Font"
+font-size = 16
+theme = Builtin Solarized Dark
+palette = 8=#626880
+cursor-style = block
+mouse-hide-while-typing = true
+window-padding-balance = true
+window-save-state = always
+window-colorspace = "display-p3"
+
+# =========================
+# Pane navigation
+# =========================
+keybind = ctrl+h=goto_split:left
+keybind = ctrl+j=goto_split:down
+keybind = ctrl+k=goto_split:up
+keybind = ctrl+l=goto_split:right
+
+# =========================
+# Pane splitting
+# =========================
+keybind = ctrl+shift+v=new_split:right
+keybind = ctrl+shift+h=new_split:down
+
+# =========================
+# Resize panes
+# =========================
+keybind = alt+h=resize_split:left,10
+keybind = alt+j=resize_split:down,10
+keybind = alt+k=resize_split:up,10
+keybind = alt+l=resize_split:right,10
+
+# =========================
+# scroll up/down 
+# =========================
+keybind = ctrl+shift+k=scroll_page_lines:-3
+keybind = ctrl+shift+j=scroll_page_lines:3
