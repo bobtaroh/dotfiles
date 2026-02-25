@@ -1,0 +1,75 @@
+// Place your key bindings in this file to override the defaults
+[
+    // =========================
+    // Terminal Pane navigation
+    // =========================
+    {
+        "key": "ctrl+h",
+        "command": "workbench.action.terminal.focusPreviousPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+l",
+        "command": "workbench.action.terminal.focusNextPane",
+        "when": "terminalFocus"
+    },
+    // ※ VSCodeのターミナルは主に横並び（または縦並び）の1次元リストとして管理されるため、上下(j/k)も前後移動にマッピングします
+    {
+        "key": "ctrl+j",
+        "command": "workbench.action.terminal.focusNextPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+k",
+        "command": "workbench.action.terminal.focusPreviousPane",
+        "when": "terminalFocus"
+    },
+
+    // =========================
+    // Terminal Pane splitting
+    // =========================
+    {
+        "key": "ctrl+shift+v",
+        "command": "workbench.action.terminal.split",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+h",
+        "command": "workbench.action.terminal.split",
+        "when": "terminalFocus"
+    },
+
+    // =========================
+    // Terminal Resize panes
+    // =========================
+    {
+        "key": "alt+h",
+        "command": "workbench.action.terminal.resizePaneLeft",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+j",
+        "command": "workbench.action.terminal.resizePaneDown",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+k",
+        "command": "workbench.action.terminal.resizePaneUp",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "alt+l",
+        "command": "workbench.action.terminal.resizePaneRight",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+k",
+        "command": "workbench.action.terminal.scrollUp",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+shift+j",
+        "command": "workbench.action.terminal.scrollDown",
+        "when": "terminalFocus"
+    }
+]
