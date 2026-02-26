@@ -1,5 +1,5 @@
 # =========================
-# Appearance 
+# Appearance
 # =========================
 font-family = "BlexMono Nerd Font"
 font-size = 16
@@ -34,7 +34,7 @@ keybind = alt+k=resize_split:up,10
 keybind = alt+l=resize_split:right,10
 
 # =========================
-# scroll up/down 
+# scroll up/down
 # =========================
 keybind = ctrl+shift+k=scroll_page_lines:-3
 keybind = ctrl+shift+j=scroll_page_lines:3
