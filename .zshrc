@@ -5,116 +5,179 @@
 # Homebrew
 export PATH="/opt/homebrew/bin:$PATH"
 
-# Python Environment (pyenv)
+# Locale
+export LANG=ja_JP.UTF-8
+
+# brew --prefix のキャッシュ（毎回呼ぶと ~30-100ms かかるため変数化）
+_BREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
+
+# =============================================================================
+# VERSION MANAGERS (ガード付き)
+# =============================================================================
+
+# pyenv
 export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
+if command -v pyenv >/dev/null 2>&1; then
+  export PATH="$PYENV_ROOT/shims:$PATH"
+fi
+
+# rbenv
+if command -v rbenv >/dev/null 2>&1; then
+  export PATH="$HOME/.rbenv/shims:$PATH"
+fi
+
+# fnm (Node.js)
+if command -v fnm >/dev/null 2>&1; then
+  eval "$(fnm env --use-on-cd --shell zsh)"
+fi
+
+# =============================================================================
+# SHELL CONFIGURATION
+# =============================================================================
 
 # direnv
-eval "$(direnv hook zsh)"
+if command -v direnv >/dev/null 2>&1; then
+  eval "$(direnv hook zsh)"
+fi
 
-# =============================================================================
-# ZSH CORE SETTINGS
-# =============================================================================
-
-# History configuration
+# History
+HISTFILE=~/.zsh_history
 HISTSIZE=10000
 SAVEHIST=10000
 setopt HIST_IGNORE_DUPS
 setopt HIST_FIND_NO_DUPS
 setopt SHARE_HISTORY
 
-# The following lines have been added by Docker Desktop to enable Docker CLI completions.
-fpath=(/Users/kohtaroh/.docker/completions $fpath)
+# Docker CLI completions
+if [[ -d "$HOME/.docker/completions" ]]; then
+  fpath=($HOME/.docker/completions $fpath)
+fi
+
+# zsh-completions (Homebrew)
+if [[ -d "$_BREW_PREFIX/share/zsh-completions" ]]; then
+  FPATH=${_BREW_PREFIX}/share/zsh-completions:$FPATH
+fi
+
+# compinit（24時間キャッシュで高速化）
 autoload -Uz compinit
-compinit
-# End of Docker CLI completions
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 
 # Completion behavior options
 setopt AUTO_MENU
 setopt COMPLETE_IN_WORD
 setopt ALWAYS_TO_END
 
-# =============================================================================
-# COMPLETION STYLING & BEHAVIOR
-# =============================================================================
-
-# Menu appearance and behavior
+# Completion styling
 zstyle ':completion:*' menu select
 zstyle ':completion:*' verbose yes
 zstyle ':completion:*:descriptions' format '%B%d%b'
 zstyle ':completion:*:messages' format '%d'
 zstyle ':completion:*:warnings' format 'No matches for: %d'
-
-# Completion matching and grouping
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' group-name ''
 
-# =============================================================================
-# KEY BINDINGS
-# =============================================================================
-
-# Tab completion
+# Key bindings (emacs mode)
+bindkey -e
 bindkey '^I' expand-or-complete
 
-# Ghostty / VSCode のターミナル操作感統一のための単語単位ナビゲーション・削除
-# ※ ターミナル側で Option/Alt が Meta キーとして設定されていることが前提
+# 単語単位ナビゲーション・削除（Ghostty / VSCode ターミナル操作感統一）
 bindkey '\ef' forward-word          # Alt + f: 次の単語へ
 bindkey '\eb' backward-word         # Alt + b: 前の単語へ
 bindkey '\e\x7f' backward-kill-word # Alt + Backspace: カーソル前の1単語を削除
-bindkey '^W' backward-kill-word     # Ctrl + w: カーソル前の1単語を削除（標準のフォールバック）
+bindkey '^W' backward-kill-word     # Ctrl + w: カーソル前の1単語を削除
 
 # =============================================================================
-# CUSTOM FUNCTIONS
+# ALIASES
+# =============================================================================
+
+alias python='python3'
+alias lz='lazygit'
+
+# Modern CLI alternatives (ガード付き)
+if command -v eza >/dev/null 2>&1; then
+  alias ls='eza --icons --git'
+  alias ll='eza -l -g --icons --git'
+  alias la='eza -la -g --icons --git'
+fi
+
+if command -v bat >/dev/null 2>&1; then
+  alias cat='bat --style=plain'
+fi
+
+# =============================================================================
+# FUNCTIONS
 # =============================================================================
 
 # Repository navigation with ghq+fzf
 function g() {
-    local repo_name=$(ghq list | fzf --preview 'eza --tree --level=2 --git --group-directories-first $(ghq root)/{}')
-    if [ -n "$repo_name" ]; then
-        cd "$(ghq root)/$repo_name"
-    fi
+  local repo_name=$(ghq list | fzf --preview 'eza --tree --level=2 --git --group-directories-first $(ghq root)/{}')
+  if [[ -n "$repo_name" ]]; then
+    cd "$(ghq root)/$repo_name"
+  fi
 }
 
 # Git branch switching with fzf
 function b() {
-    local branch=$(git branch --sort=-committerdate | fzf)
-    if [[ -n "$branch" ]]; then
-        git switch "$(echo $branch | sed 's/^[ *]*//')"
-    fi
+  local branch=$(git branch --sort=-committerdate | fzf)
+  if [[ -n "$branch" ]]; then
+    git switch "$(echo $branch | sed 's/^[ *]*//')"
+  fi
 }
-
-alias lz='lazygit'
-
-# Modern CLI alternatives
-alias ls='eza --icons --git'
-alias ll='eza -l -g --icons --git'
-alias la='eza -la -g --icons --git'
-alias cat='bat --style=plain'
 
 # =============================================================================
 # PLUGINS & EXTERNAL TOOLS
 # =============================================================================
 
-# Prompt
-eval "$(starship init zsh)"
+# starship（キャッシュで高速化）
+if command -v starship >/dev/null 2>&1; then
+  _STARSHIP_CACHE="$HOME/.cache/starship-init.zsh"
+  if [[ ! -f "$_STARSHIP_CACHE" ]] || [[ "$(command -v starship)" -nt "$_STARSHIP_CACHE" ]]; then
+    mkdir -p "$(dirname "$_STARSHIP_CACHE")"
+    starship init zsh >| "$_STARSHIP_CACHE"
+  fi
+  source "$_STARSHIP_CACHE"
+  unset _STARSHIP_CACHE
+fi
 
-# zoxide (スマートな cd コマンド代替)
-eval "$(zoxide init zsh)"
-alias cd='z' # 従来のcdをzoxideに置き換える場合
+# zoxide
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+  alias cd='z'
+fi
 
 # fzf-tab
-source /opt/homebrew/share/fzf-tab/fzf-tab.zsh
+if [[ -f "$_BREW_PREFIX/share/fzf-tab/fzf-tab.zsh" ]]; then
+  source "$_BREW_PREFIX/share/fzf-tab/fzf-tab.zsh"
+fi
 
 # Auto suggestions
-source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-ZSH_AUTOSUGGEST_USE_ASYNC=true
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#586e75,bold"
-bindkey '^f' vi-forward-word
+if [[ -f "$_BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+  source "$_BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+  ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+  ZSH_AUTOSUGGEST_USE_ASYNC=true
+  ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#586e75,bold"
+  bindkey '^f' vi-forward-word
+fi
 
-# syntax highlighting
-source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-ZSH_HIGHLIGHT_STYLES[path]='none'
-ZSH_HIGHLIGHT_STYLES[path_prefix]='none'
+# Syntax highlighting (must be loaded last among plugins)
+if [[ -f "$_BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+  source "$_BREW_PREFIX/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+  ZSH_HIGHLIGHT_STYLES[path]='none'
+  ZSH_HIGHLIGHT_STYLES[path_prefix]='none'
+fi
+
+# FZF color theme (Solarized)
 export FZF_DEFAULT_OPTS='--color=fg:-1,bg:-1,hl:#268bd2,fg+:-1,bg+:-1,hl+:#268bd2 --color=info:#b58900,prompt:#268bd2,pointer:#268bd2,marker:#268bd2,spinner:#268bd2,header:#268bd2'
+
+# Cleanup
+unset _BREW_PREFIX
+
+# =============================================================================
+# LOCAL OVERRIDES
+# =============================================================================
+
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

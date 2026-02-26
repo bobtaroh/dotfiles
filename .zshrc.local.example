@@ -1,0 +1,20 @@
+# ~/.zshrc.local - Machine-specific settings (not tracked by git)
+#
+# This file is sourced at the end of .zshrc.
+# Copy this to ~/.zshrc.local and customize for your environment.
+
+# =============================================================================
+# PATH (machine-specific tools)
+# =============================================================================
+# export PATH="$HOME/go/bin:$PATH"
+# export PATH="$HOME/.rd/bin:$PATH"
+
+# =============================================================================
+# ENVIRONMENT VARIABLES
+# =============================================================================
+# export GOPATH=$HOME/go
+
+# =============================================================================
+# ALIASES
+# =============================================================================
+# alias dps='docker ps --filter "label=com.docker.compose.project" --format "table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}"'
