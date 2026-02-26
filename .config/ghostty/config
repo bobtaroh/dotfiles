@@ -9,7 +9,7 @@ cursor-style = block
 mouse-hide-while-typing = true
 window-padding-balance = true
 window-save-state = always
-fullscreen = true
+maximize = true
 window-colorspace = "display-p3"
 
 # =========================
