@@ -1,28 +1,40 @@
 # dotfiles
 
-My personal configuration files.
+My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/).
 
 ## Managed Files
-- `.zshrc`: Zsh共通設定（シンボリックリンクで `~/.zshrc` に配置）
-- `.zshrc.local.example`: マシン固有設定のテンプレート
-- `.config/ghostty`: Ghostty terminal configuration
-- `.config/starship.toml`: Starship prompt configuration
-- `.config/gh`: GitHub CLI configuration
-- `vscode/`: VSCode settings and extensions list
+
+| ソース | 展開先 |
+|---|---|
+| `dot_zshrc` | `~/.zshrc` |
+| `dot_config/starship.toml` | `~/.config/starship.toml` |
+| `dot_config/ghostty/config` | `~/.config/ghostty/config` |
+| `Library/Application Support/Code/User/settings.json` | `~/Library/Application Support/Code/User/settings.json` |
+| `Library/Application Support/Code/User/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json` |
+
+**除外ファイル（git管理外）:**
+- `dot_config/gh/` — GitHub CLI 認証情報
+
+## Setup
+
+### 新しいマシン
+
+```zsh
+brew install chezmoi
+chezmoi init --source ~/dotfiles github.com/bobtaroh/dotfiles
+chezmoi apply
+```
+
+### 既存マシン（再適用）
+
+```zsh
+chezmoi apply
+```
 
 ## Zsh Configuration
 
 `.zshrc`（共通設定）と `~/.zshrc.local`（マシン固有設定）の2ファイル構成。
 
-```
-dotfiles/.zshrc              # 共通設定（git管理）
-dotfiles/.zshrc.local.example # ローカル設定のテンプレート（git管理）
-
-~/.zshrc       -> dotfiles/.zshrc へのシンボリックリンク
-~/.zshrc.local -> マシン固有設定（git管理外）
-```
-
-- `.zshrc` は `command -v` や `[[ -d/-f ... ]]` ガード付きで、ツールが未インストールの環境でも安全に動作する
 - `.zshrc` の末尾で `~/.zshrc.local` を読み込む
 - マシン固有のPATH・環境変数・エイリアスは `.zshrc.local` に記述する
 
@@ -32,31 +44,20 @@ cp ~/dotfiles/.zshrc.local.example ~/.zshrc.local
 # ~/.zshrc.local を自分の環境に合わせて編集
 ```
 
-## Setup
-To manage your configuration files, create a symbolic link from the home directory to this repository.
+## VSCode Extensions
 
-### Usage
-```zsh
-ln -s [Path to source file in dotfiles] [Path to target location]
-```
+インストール済み拡張機能の一覧は `vscode/extensions.txt` で管理。
 
-### Examples
-```zsh
-# zsh
-ln -s ~/dotfiles/.zshrc ~/.zshrc
-
-# config files
-ln -s ~/dotfiles/.config/ghostty ~/.config/ghostty
-ln -s ~/dotfiles/.config/starship.toml ~/.config/starship.toml
-ln -s ~/dotfiles/.config/gh ~/.config/gh
-
-# VSCode
-ln -s ~/dotfiles/vscode/settings.json "$HOME/Library/Application Support/Code/User/settings.json"
-ln -s ~/dotfiles/vscode/keybindings.json "$HOME/Library/Application Support/Code/User/keybindings.json"
-```
-
-### VSCode Extensions
-To install all extensions from the list:
 ```zsh
 cat ~/dotfiles/vscode/extensions.txt | xargs -L 1 code --install-extension
+```
+
+## Useful Commands
+
+```zsh
+chezmoi diff      # 未適用の変更内容を確認
+chezmoi apply     # ホームディレクトリに展開
+chezmoi status    # 変更差分の状態確認
+chezmoi managed   # chezmoi が管理するファイル一覧
+chezmoi verify    # 展開済みファイルとソースの整合性チェック
 ```
