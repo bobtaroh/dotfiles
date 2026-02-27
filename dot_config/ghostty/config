@@ -2,7 +2,7 @@
 # Appearance
 # =========================
 font-family = "BlexMono Nerd Font"
-font-size = 16
+font-size = 14
 theme = Builtin Solarized Dark
 palette = 8=#626880
 cursor-style = block
