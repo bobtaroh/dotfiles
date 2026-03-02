@@ -8,7 +8,7 @@ palette = 8=#626880
 cursor-style = block
 mouse-hide-while-typing = true
 window-padding-balance = true
-window-save-state = always
+window-save-state = never
 maximize = true
 window-colorspace = "display-p3"
 
