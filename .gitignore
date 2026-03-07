@@ -1,3 +1,4 @@
 .zshrc.local
-.claude/
+dot_claude/*
+!dot_claude/skills/
 dot_config/gh/
