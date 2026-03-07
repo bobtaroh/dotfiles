@@ -15,6 +15,7 @@ My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/)
 | `Library/Application Support/Code/User/settings.json` | `~/Library/Application Support/Code/User/settings.json` |
 | `Library/Application Support/Code/User/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json` |
 | `dot_claude/skills/add-dotfile/SKILL.md` | `~/.claude/skills/add-dotfile/SKILL.md` |
+| `dot_claude/skills/update-dotfile/SKILL.md` | `~/.claude/skills/update-dotfile/SKILL.md` |
 
 **除外ファイル（git管理外）:**
 - `~/.zshrc.local` — マシン固有設定（PATH、環境変数、エイリアスなど）
