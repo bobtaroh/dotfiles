@@ -1,3 +1,8 @@
 [edit]
   command = "code"
   args = ["--wait"]
+
+[data]
+  gitEmail = {{ promptString "Git email address" | quote }}
+  gitName = {{ promptString "Git name" | quote }}
+  ghqRoot = {{ promptString "ghq root directory (e.g. ~/Documents/src)" | quote }}
