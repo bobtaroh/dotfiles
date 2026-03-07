@@ -8,7 +8,7 @@ My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/)
 |---|---|
 | `dot_zshrc` | `~/.zshrc` |
 | `dot_zprofile` | `~/.zprofile` |
-| `dot_gitconfig.tmpl` | `~/.gitconfig` |
+| `dot_gitconfig.tmpl` | `~/.gitconfig`（テンプレート） |
 | `dot_config/starship.toml` | `~/.config/starship.toml` |
 | `dot_config/ghostty/config` | `~/.config/ghostty/config` |
 | `private_dot_ssh/config` | `~/.ssh/config` |
@@ -23,35 +23,60 @@ My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/)
 
 ## Setup
 
-### 新しいマシン
+### 新しいマシンのセットアップ手順
 
-```zsh
-brew install chezmoi
-chezmoi init git@github.com:bobtaroh/dotfiles.git
-chezmoi diff   # 変更内容を確認
-chezmoi apply
+```sh
+# 1. リポジトリを取得（git は macOS に標準搭載）
+git clone git@github.com:bobtaroh/dotfiles.git ~/dotfiles-tmp
+
+# 2. セットアップスクリプトを実行
+~/dotfiles-tmp/setup.sh
 ```
 
-`chezmoi init` 実行中に以下を対話形式で入力する:
+`setup.sh` の実行中に以下を対話形式で入力する：
 
+- **personal / work** — マシンの種別
+- **ghq root** — ghq のルートディレクトリ（デフォルト: `~/Documents/src`）
 - **Git email address** — マシンで使う git のメールアドレス
 - **Git name** — git のユーザー名
-- **ghq root directory** — ghq のルートディレクトリ（例: `~/Documents/src`）
 
-入力値は `~/.config/chezmoi/chezmoi.toml` に保存され、以降は聞かれない。
+### セットアップフロー
 
-初回セットアップ後、マシン固有の設定を追加:
-
-```zsh
-cp $(chezmoi source-path)/.zshrc.local.example ~/.zshrc.local
-# ~/.zshrc.local を自分の環境に合わせて編集
+```mermaid
+flowchart TD
+    A([新しいマシン]) --> B[git clone でdotfilesを取得]
+    B --> C[setup.sh を実行]
+    C --> D{Homebrew\nインストール済み?}
+    D -- No --> E[Homebrew をインストール]
+    D -- Yes --> F
+    E --> F{personal or work?}
+    F -- personal --> G[brew bundle Brewfile\n+ Brewfile.personal]
+    F -- work --> H[brew bundle Brewfile\n+ Brewfile.work]
+    G --> I[ghq root を設定]
+    H --> I
+    I --> J[ghq get dotfiles]
+    J --> K[chezmoi init]
+    K --> L[chezmoi diff で確認]
+    L --> M[chezmoi apply]
+    M --> N[~/.zshrc.local を生成]
+    N --> O([セットアップ完了])
 ```
 
 ### 既存マシン（再適用）
 
-```zsh
+```sh
 chezmoi apply
 ```
+
+## Brewfile
+
+| ファイル | 用途 |
+|---|---|
+| `Brewfile` | 共通ツール（全マシン） |
+| `Brewfile.personal` | 個人PC専用 |
+| `Brewfile.work` | 会社PC専用（会社固有ツールを追記） |
+
+> 会社でブロックされているツールがある場合は `Brewfile` から外して手動インストールで対応する。
 
 ## Zsh Configuration
 
@@ -64,7 +89,7 @@ chezmoi apply
 
 chezmoi のエディタは VSCode に設定済み（`.chezmoi.toml.tmpl`）。
 
-```zsh
+```sh
 chezmoi edit --apply ~/.zshrc   # VSCode で編集して即反映
 ```
 
@@ -72,14 +97,14 @@ chezmoi edit --apply ~/.zshrc   # VSCode で編集して即反映
 
 インストール済み拡張機能の一覧は `vscode/extensions.txt` で管理。
 
-```zsh
+```sh
 cat $(chezmoi source-path)/vscode/extensions.txt | xargs -L 1 code --install-extension
 ```
 
 ## Useful Commands
 
-```zsh
-chezmoi edit --apply <file>   # ファイルを編集して即反映
+```sh
+chezmoi edit --apply <file>   # ファイルを編集して即反映（展開先パスを指定）
 chezmoi diff                  # 未適用の変更内容を確認
 chezmoi apply                 # ホームディレクトリに展開
 chezmoi status                # 変更差分の状態確認
