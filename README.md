@@ -13,7 +13,8 @@ My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/)
 | `Library/Application Support/Code/User/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json` |
 
 **除外ファイル（git管理外）:**
-- `dot_config/gh/` — GitHub CLI 認証情報
+- `~/.zshrc.local` — マシン固有設定（PATH、環境変数、エイリアスなど）
+- `~/.config/gh/` — GitHub CLI 認証情報
 
 ## Setup
 
@@ -21,8 +22,16 @@ My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/)
 
 ```zsh
 brew install chezmoi
-chezmoi init --source ~/dotfiles github.com/bobtaroh/dotfiles
+chezmoi init git@github.com:bobtaroh/dotfiles.git
+chezmoi diff   # 変更内容を確認
 chezmoi apply
+```
+
+初回セットアップ後、マシン固有の設定を追加:
+
+```zsh
+cp $(chezmoi source-path)/.zshrc.local.example ~/.zshrc.local
+# ~/.zshrc.local を自分の環境に合わせて編集
 ```
 
 ### 既存マシン（再適用）
@@ -36,12 +45,14 @@ chezmoi apply
 `.zshrc`（共通設定）と `~/.zshrc.local`（マシン固有設定）の2ファイル構成。
 
 - `.zshrc` の末尾で `~/.zshrc.local` を読み込む
-- マシン固有のPATH・環境変数・エイリアスは `.zshrc.local` に記述する
+- マシン固有の PATH・環境変数・エイリアスは `.zshrc.local` に記述する
 
-初回セットアップ:
+## Editor
+
+chezmoi のエディタは VSCode に設定済み（`.chezmoi.toml.tmpl`）。
+
 ```zsh
-cp ~/dotfiles/.zshrc.local.example ~/.zshrc.local
-# ~/.zshrc.local を自分の環境に合わせて編集
+chezmoi edit --apply ~/.zshrc   # VSCode で編集して即反映
 ```
 
 ## VSCode Extensions
@@ -49,15 +60,17 @@ cp ~/dotfiles/.zshrc.local.example ~/.zshrc.local
 インストール済み拡張機能の一覧は `vscode/extensions.txt` で管理。
 
 ```zsh
-cat ~/dotfiles/vscode/extensions.txt | xargs -L 1 code --install-extension
+cat $(chezmoi source-path)/vscode/extensions.txt | xargs -L 1 code --install-extension
 ```
 
 ## Useful Commands
 
 ```zsh
-chezmoi diff      # 未適用の変更内容を確認
-chezmoi apply     # ホームディレクトリに展開
-chezmoi status    # 変更差分の状態確認
-chezmoi managed   # chezmoi が管理するファイル一覧
-chezmoi verify    # 展開済みファイルとソースの整合性チェック
+chezmoi edit --apply <file>   # ファイルを編集して即反映
+chezmoi diff                  # 未適用の変更内容を確認
+chezmoi apply                 # ホームディレクトリに展開
+chezmoi status                # 変更差分の状態確認
+chezmoi managed               # chezmoi が管理するファイル一覧
+chezmoi verify                # 展開済みファイルとソースの整合性チェック
+chezmoi cd                    # ソースディレクトリに移動
 ```
