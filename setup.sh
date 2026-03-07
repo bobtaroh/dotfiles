@@ -1,9 +1,15 @@
 #!/bin/zsh
 # =============================================================================
 # dotfiles setup script
+#
+# Usage:
+#   git clone git@github.com:bobtaroh/dotfiles.git ~/dotfiles-tmp
+#   ~/dotfiles-tmp/setup.sh
 # =============================================================================
 
 set -e
+
+DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # -----------------------------------------------------------------------------
 # Homebrew
@@ -32,8 +38,6 @@ fi
 # -----------------------------------------------------------------------------
 # Install packages
 # -----------------------------------------------------------------------------
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-
 echo ""
 echo "Installing common packages..."
 brew bundle --file="$DOTFILES_DIR/Brewfile"
@@ -49,6 +53,17 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# ghq root
+# -----------------------------------------------------------------------------
+echo ""
+read "ghq_root?ghq root directory [~/Documents/src]: "
+ghq_root="${ghq_root:-$HOME/Documents/src}"
+git config --global ghq.root "$ghq_root"
+
+# ghq にdotfilesリポジトリを登録
+ghq get github.com/bobtaroh/dotfiles
+
+# -----------------------------------------------------------------------------
 # chezmoi
 # -----------------------------------------------------------------------------
 echo ""
@@ -61,5 +76,15 @@ if [[ "$apply" == "y" ]]; then
   chezmoi apply
 fi
 
+# -----------------------------------------------------------------------------
+# zshrc.local
+# -----------------------------------------------------------------------------
+if [[ ! -f "$HOME/.zshrc.local" ]]; then
+  cp "$(chezmoi source-path)/.zshrc.local.example" "$HOME/.zshrc.local"
+  echo ""
+  echo "Created ~/.zshrc.local from example. Edit it for machine-specific settings."
+fi
+
 echo ""
 echo "Setup complete!"
+echo "Please restart your terminal."
