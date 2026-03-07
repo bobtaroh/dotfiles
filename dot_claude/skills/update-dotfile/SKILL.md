@@ -6,6 +6,8 @@ disable-model-invocation: true
 
 `$ARGUMENTS` を chezmoi で編集してリポジトリに反映する。
 
+**重要**: 引数には必ず**展開先のパス**（`~/.zshrc` など）を指定する。ソースディレクトリ（`~/.local/share/chezmoi/...`）のパスを渡してはいけない。
+
 ## 現在の管理状況
 - 管理ファイル一覧: !`chezmoi managed`
 
