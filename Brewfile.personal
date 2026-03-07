@@ -1,0 +1,15 @@
+# Personal machine only
+
+brew "juliaup"
+brew "jupyterlab"
+
+cask "cursor"
+cask "discord"
+cask "docker-desktop"
+cask "google-drive"
+cask "logi-options+"
+
+mas "GarageBand", id: 682658836
+mas "Goodnotes", id: 1444383602
+mas "Keynote", id: 409183694
+mas "LINE", id: 539883307
