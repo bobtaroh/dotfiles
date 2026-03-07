@@ -7,10 +7,14 @@ My personal configuration files, managed with [chezmoi](https://www.chezmoi.io/)
 | ソース | 展開先 |
 |---|---|
 | `dot_zshrc` | `~/.zshrc` |
+| `dot_zprofile` | `~/.zprofile` |
+| `dot_gitconfig.tmpl` | `~/.gitconfig` |
 | `dot_config/starship.toml` | `~/.config/starship.toml` |
 | `dot_config/ghostty/config` | `~/.config/ghostty/config` |
+| `private_dot_ssh/config` | `~/.ssh/config` |
 | `Library/Application Support/Code/User/settings.json` | `~/Library/Application Support/Code/User/settings.json` |
 | `Library/Application Support/Code/User/keybindings.json` | `~/Library/Application Support/Code/User/keybindings.json` |
+| `dot_claude/skills/add-dotfile/SKILL.md` | `~/.claude/skills/add-dotfile/SKILL.md` |
 
 **除外ファイル（git管理外）:**
 - `~/.zshrc.local` — マシン固有設定（PATH、環境変数、エイリアスなど）
@@ -26,6 +30,14 @@ chezmoi init git@github.com:bobtaroh/dotfiles.git
 chezmoi diff   # 変更内容を確認
 chezmoi apply
 ```
+
+`chezmoi init` 実行中に以下を対話形式で入力する:
+
+- **Git email address** — マシンで使う git のメールアドレス
+- **Git name** — git のユーザー名
+- **ghq root directory** — ghq のルートディレクトリ（例: `~/Documents/src`）
+
+入力値は `~/.config/chezmoi/chezmoi.toml` に保存され、以降は聞かれない。
 
 初回セットアップ後、マシン固有の設定を追加:
 
