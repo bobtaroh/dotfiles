@@ -54,8 +54,8 @@ flowchart TD
     F -- work --> H[brew bundle Brewfile\n+ Brewfile.work]
     G --> I[ghq root を設定]
     H --> I
-    I --> J[ghq get dotfiles]
-    J --> K[chezmoi init]
+    I --> J[chezmoi init]
+    J --> K[ghq にシンボリックリンク作成]
     K --> L[chezmoi diff で確認]
     L --> M[chezmoi apply]
     M --> N[~/.zshrc.local を生成]

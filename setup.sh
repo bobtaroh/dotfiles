@@ -60,15 +60,20 @@ read "ghq_root?ghq root directory [~/Documents/src]: "
 ghq_root="${ghq_root:-$HOME/Documents/src}"
 git config --global ghq.root "$ghq_root"
 
-# ghq にdotfilesリポジトリを登録
-ghq get github.com/bobtaroh/dotfiles
-
 # -----------------------------------------------------------------------------
 # chezmoi
 # -----------------------------------------------------------------------------
 echo ""
 echo "Applying dotfiles..."
 chezmoi init git@github.com:bobtaroh/dotfiles.git
+
+# ghq からchezmoiソースディレクトリへシンボリックリンクを作成
+ghq_dotfiles="$ghq_root/github.com/bobtaroh/dotfiles"
+mkdir -p "$(dirname "$ghq_dotfiles")"
+if [[ ! -e "$ghq_dotfiles" ]]; then
+  ln -s "$(chezmoi source-path)" "$ghq_dotfiles"
+  echo "Created symlink: $ghq_dotfiles -> $(chezmoi source-path)"
+fi
 chezmoi diff
 echo ""
 read "apply?Apply dotfiles? [y/N] "
