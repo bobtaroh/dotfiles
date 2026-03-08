@@ -1,4 +1,6 @@
 .zshrc.local
 dot_claude/*
 !dot_claude/skills/
+!dot_claude/settings.json.tmpl
+!dot_claude/executable_statusline-command.sh
 dot_config/gh/
