@@ -1,2 +1,33 @@
 # Work machine only
-# Add company-specific tools here as needed
+
+# Languages & version managers
+brew "go"
+brew "node"
+brew "node@22"
+brew "rbenv"
+brew "ruby-build"
+brew "sdkman-cli"
+brew "tfenv"
+
+# Development tools
+brew "ecspresso"
+brew "git-lfs"
+brew "go-task"
+brew "golang-migrate"
+brew "golangci-lint"
+brew "lazydocker"
+brew "mkcert"
+brew "mysql"
+brew "poetry"
+brew "shellcheck"
+brew "wget"
+brew "yarn"
+brew "yq"
+
+# Apps
+cask "aws-vault"
+cask "burp-suite"
+cask "notion-calendar"
+cask "postman"
+cask "rancher"
+cask "session-manager-plugin"
