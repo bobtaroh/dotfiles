@@ -24,7 +24,7 @@ Review this session's conversation and extract knowledge the user learned (thing
    - Name, Date (today), Tags, Source: `claude-code`, Summary, page body
 4. Save a markdown file to the til repository:
    - Repo: `~/Documents/src/github.com/bobtaroh/til`
-   - Filename: `YYYY-MM-DD-<slug>.md` (slug = lowercase title with spaces replaced by hyphens, in English)
+   - Path: `entries/YYYY-MM-DD-<slug>.md` (slug = lowercase title with spaces replaced by hyphens, in English)
    - File content:
      ```
      ---
@@ -41,7 +41,7 @@ Review this session's conversation and extract knowledge the user learned (thing
      ## 詳細
      （Body の内容）
      ```
-   - Run: `cd ~/Documents/src/github.com/bobtaroh/til && git add <file> && git commit -m "til: <slug>" && git push`
+   - Run: `cd ~/Documents/src/github.com/bobtaroh/til && git add entries/<file> && git commit -m "til: <slug>" && git push`
 5. Show the created Notion page URL and the git commit result
 
 ## Notes
