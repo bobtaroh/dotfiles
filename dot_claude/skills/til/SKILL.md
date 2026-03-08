@@ -29,3 +29,4 @@ Review this session's conversation and extract knowledge the user learned (thing
 - If no clear learning is found, ask the user: "What would you like to save?"
 - Prefer existing tags; propose new ones only when necessary
 - If multiple entries, list all proposals and let the user select or trim
+- All output to the user and all content written to Notion (Name, Summary, Body) must be in Japanese
