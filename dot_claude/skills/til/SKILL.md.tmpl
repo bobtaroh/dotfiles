@@ -1,0 +1,113 @@
+---
+name: til
+description: セッションで学んだ知識を抽出して{{ if .tilNotionEnabled }}NotionのDB_TILと{{ end }}gitリポジトリに保存する。例: /til
+---
+
+Review this session's conversation and extract knowledge the user learned (things they didn't know before or looked up).{{ if .tilNotionEnabled }} Save it to Notion DB_TIL and push{{ else }} Save{{ end }} a markdown file to the til git repository.
+
+## Extraction Rules
+
+- Focus on the knowledge itself, not session steps or work logs
+- Each distinct piece of knowledge = one entry
+- If multiple learnings exist, propose them as separate entries and let the user choose
+
+## Category
+
+Determine the most appropriate category for each entry:
+
+- `learning` — new concept, technique, or API discovered
+- `debug` — debugging insight, root cause analysis
+- `reference` — command reference, cheat sheet, configuration
+- `setup` — environment setup, installation, configuration procedure
+- `architecture` — design decision, system architecture understanding
+- `other` — anything that doesn't fit above
+
+## Steps
+
+1. Review the conversation and identify what was learned
+2. Propose the following to the user for confirmation:
+   - **Name**: Title (use `$ARGUMENTS` if provided)
+   - **Category**: One of the categories above
+   - **Tags**: Choose from existing tags: `git` `zsh` `macos` `python` `javascript` `typescript` `docker` `claude-code` `terminal` `security` `notion` `chezmoi` `java` `grpc` `aws` `redis` `celery` — propose new tags if none fit
+   - **Summary**: 2-3 line key points
+   - **Body**: Detailed explanation, code examples, etc.
+{{- if .tilNotionEnabled }}
+3. After user confirms, create a page in Notion DB_TIL:
+   - DB ID: `{{ .tilNotionDB }}`
+   - Properties to set:
+     - `{{ .tilNotionTitleProp }}`: entry title
+     - `Date`: today's date
+{{- if .tilNotionHasSource }}
+     - `Source`: `claude-code`
+{{- end }}
+     - `{{ .tilNotionSummaryProp }}`: summary text
+{{- if ne .tilNotionCategoryProp "" }}
+     - `{{ .tilNotionCategoryProp }}`: category
+{{- end }}
+{{- if .tilNotionHasVerification }}
+     - `Verification`: today + 14 days (verification deadline)
+{{- end }}
+   - Page body: detailed explanation
+4. Save a markdown file to the til repository:
+{{- else }}
+3. After user confirms, save a markdown file to the til repository:
+{{- end }}
+   - Repo: `{{ .tilRepoPath }}`
+   - Path: `entries/YYYY-MM-DD-<slug>.md` (slug = lowercase title with spaces replaced by hyphens, in English)
+   - File content:
+     ```
+     ---
+     date: YYYY-MM-DD
+     category: <category>
+     tags: [tag1, tag2]
+{{- if .tilNotionEnabled }}
+     notion: <created Notion page URL>
+{{- end }}
+     ---
+
+     # タイトル
+
+     ## 概要
+     （Summary の内容）
+
+     ## 詳細
+     （Body の内容）
+     ```
+   - Run: `cd {{ .tilRepoPath }} && git add entries/<file> INDEX.md && git commit -m "til: <slug>" && git push`
+{{ if .tilNotionEnabled -}}
+5. Update INDEX.md in the til repository:
+{{- else -}}
+4. Update INDEX.md in the til repository:
+{{- end }}
+   - If `{{ .tilRepoPath }}/INDEX.md` does not exist, create it with the header below
+   - Append a new row to the table (newest first)
+   - Do NOT duplicate entries — if the same file path already exists, update it instead
+   - Format:
+     ```markdown
+     # TIL Index
+
+     | Date | Title | Category | Tags | Path |
+     |------|-------|----------|------|------|
+     | 2026-03-09 | Example Title | learning | java, grpc | entries/2026-03-09-example-title.md |
+     ```
+{{ if .tilNotionEnabled -}}
+6. Show the created Notion page URL and the git commit result
+{{- else -}}
+5. Show the git commit result
+{{- end }}
+
+## Formatting rules
+
+- Use standard markdown syntax only — compatible with Notion, GitHub, and other renderers
+- Tables MUST use pipe-based markdown table syntax
+- Diagrams MUST use fenced mermaid code blocks
+- Code blocks MUST use fenced syntax with language identifier
+
+## Notes
+
+- If no clear learning is found, ask the user: "What would you like to save?"
+- Prefer existing tags; propose new ones only when necessary
+- If multiple entries, list all proposals and let the user select or trim
+- All output to the user and all content written to markdown files must be in Japanese
+
+$ARGUMENTS

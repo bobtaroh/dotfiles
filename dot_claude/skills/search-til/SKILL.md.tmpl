@@ -1,0 +1,63 @@
+---
+name: search-til
+description: TILリポジトリ{{ if .tilNotionEnabled }}とNotionのDB_TIL{{ end }}を検索・一覧表示する。例: /search-til docker
+---
+
+Search and browse TIL entries from the local git repository{{ if .tilNotionEnabled }} and Notion DB_TIL{{ end }}.
+
+## Capabilities
+
+Based on the user's request, perform one or more of the following:
+
+### 1. List recent entries
+
+- Read `{{ .tilRepoPath }}/INDEX.md`
+- Default: show the 10 most recent entries
+- Support filtering by category, tag, or date range
+- Display results as a markdown table
+
+### 2. Keyword search
+
+- Search file contents using Grep across all `.md` files in `{{ .tilRepoPath }}/entries/`
+- Show matching file titles, paths, and a brief context snippet
+- Rank results by relevance
+
+### 3. Browse by category
+
+- Group and display entries by category (`learning`, `debug`, `reference`, `setup`, `architecture`, `other`)
+- Show count per category
+
+### 4. View entry
+
+- If the user specifies an entry (by title, slug, or path), read and display its contents
+- Show the front matter metadata as a summary header
+{{- if .tilNotionEnabled }}
+
+### 5. Notion search (fallback)
+
+- If local search yields no results, search Notion DB_TIL as a fallback:
+  - DB ID: `{{ .tilNotionDB }}`
+- Useful for entries that may not yet be synced locally
+{{- end }}
+
+## Output format
+
+- Always display results as a clean markdown table or list
+- Include the relative path so the user can easily open the file
+- Base path: `{{ .tilRepoPath }}/`
+
+## Examples of user invocations
+
+```
+/search-til 最近のエントリ一覧
+/search-til category:debug
+/search-til tag:java
+/search-til grpcの使い方
+/search-til 2026-03のエントリ
+```
+
+## Notes
+
+- All output to the user must be in Japanese
+
+$ARGUMENTS

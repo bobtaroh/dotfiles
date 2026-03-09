@@ -1,0 +1,52 @@
+---
+name: daily-review
+description: 当日のTILエントリを一覧表示して振り返る。例: /daily-review
+---
+
+Fetch and review TIL entries from today (or a specified date) for end-of-day review.
+
+## Steps
+
+1. Determine the target date (default: today). User can specify a date (e.g. `yesterday`, `2026-03-05`)
+{{- if .tilNotionEnabled }}
+2. Search Notion DB_TIL for entries on that date:
+   - DB ID: `{{ .tilNotionDB }}`
+   - Filter by `Date` property
+3. Display entries:
+   - {{ .tilNotionTitleProp }} / Tags / {{ .tilNotionSummaryProp }}
+{{- else }}
+2. Read entries from the til repository:
+   - Scan `{{ .tilRepoPath }}/entries/` for files matching the target date (filename starts with YYYY-MM-DD)
+   - Also consult `{{ .tilRepoPath }}/INDEX.md` if it exists
+3. Display entries:
+   - Title / Category / Tags / Summary
+{{- end }}
+4. Add a brief comment: what was learned today, any connections between entries
+5. If 3+ entries exist, save a daily summary to the til repository:
+   - Repo: `{{ .tilRepoPath }}`
+   - Path: `daily/YYYY-MM-DD.md`
+   - File content:
+     ```
+     ---
+     date: YYYY-MM-DD
+     entries: <number of entries>
+     tags: [all tags that appeared today]
+     ---
+
+     # 日次振り返り: YYYY-MM-DD
+
+     ## エントリ一覧
+     （タイトル / タグ / サマリーの一覧）
+
+     ## まとめ
+     （今日のコメント）
+     ```
+   - Run: `cd {{ .tilRepoPath }} && git add daily/YYYY-MM-DD.md && git commit -m "daily: YYYY-MM-DD" && git push`
+   - If fewer than 3 entries, just display and skip the file creation
+
+## Notes
+
+- If no entries found for the date, inform the user
+- All output to the user and all content written to markdown files must be in Japanese
+
+$ARGUMENTS

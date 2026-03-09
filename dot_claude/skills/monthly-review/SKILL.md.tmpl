@@ -1,20 +1,29 @@
 ---
 name: monthly-review
-description: 直近1ヶ月のDB_TILエントリを一覧表示して振り返り、gitにもバックアップする。例: /monthly-review
+description: 直近1ヶ月のTILエントリを一覧表示して振り返り、gitにもバックアップする。例: /monthly-review
 ---
 
-Fetch and review TIL entries from the past 30 days in Notion DB_TIL, then save a backup markdown file to the til git repository.
+Fetch and review TIL entries from the past 30 days, then save a backup markdown file to the til git repository.
 
 ## Steps
 
 1. Calculate the date 30 days ago from today and the year-month (YYYY-MM)
+{{- if .tilNotionEnabled }}
 2. Search Notion DB_TIL for entries within that date range:
-   - DB URL: https://www.notion.so/2f4f90d3502180a98492deb166a7b351
+   - DB ID: `{{ .tilNotionDB }}`
+   - Filter by `Date` property
 3. Display entries grouped by Tags, then chronologically within each group:
-   - Tag / Date / Name / Summary
+   - Tag / Date / {{ .tilNotionTitleProp }} / {{ .tilNotionSummaryProp }}
+{{- else }}
+2. Read entries from the til repository:
+   - Scan `{{ .tilRepoPath }}/entries/` for files matching the date range (filename starts with YYYY-MM-DD)
+   - Also consult `{{ .tilRepoPath }}/INDEX.md` if it exists
+3. Display entries grouped by Category, then chronologically within each group:
+   - Category / Date / Title / Tags / Summary
+{{- end }}
 4. Add an overall comment: growth areas, recurring themes, topics to revisit
 5. Save a backup markdown file to the til repository:
-   - Repo: `~/Documents/src/github.com/bobtaroh/til`
+   - Repo: `{{ .tilRepoPath }}`
    - Path: `monthly/YYYY-MM.md`
    - File content:
      ```
@@ -32,7 +41,7 @@ Fetch and review TIL entries from the past 30 days in Notion DB_TIL, then save a
      ## まとめ
      （今月のコメント・成長エリア・継続テーマなど）
      ```
-   - Run: `cd ~/Documents/src/github.com/bobtaroh/til && git add monthly/YYYY-MM.md && git commit -m "monthly: YYYY-MM" && git push`
+   - Run: `cd {{ .tilRepoPath }} && git add monthly/YYYY-MM.md && git commit -m "monthly: YYYY-MM" && git push`
 6. Show the git commit result
 
 ## Notes
