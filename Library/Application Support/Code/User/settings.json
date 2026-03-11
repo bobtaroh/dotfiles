@@ -39,7 +39,7 @@
         }
     ],
     "remote.autoForwardPortsSource": "hybrid",
-    "python.languageServer": "None",
+    "python.languageServer": "Pylance",
     "github.copilot.nextEditSuggestions.enabled": false,
     "terminal.integrated.commandsToSkipShell": [
         "language-julia.interrupt"
@@ -204,5 +204,11 @@
         "https://json-schema.org/": true,
         "https://biomejs.dev": true
     },
-    "terminal.integrated.fontFamily": "'BlexMono Nerd Font', monospace"
+    "terminal.integrated.fontFamily": "'BlexMono Nerd Font', monospace",
+    "projectManager.git.baseFolders": [
+        "/Users/k-sakaue/Documents/job/github.com"
+    ],
+    "projectManager.git.maxDepthRecursion": 3,
+    "projectManager.git.ignoredFolders": ["node_modules", ".git"],
+    "projectManager.sortList": "Recent"
 }

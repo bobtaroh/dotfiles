@@ -71,5 +71,13 @@
         "key": "ctrl+shift+j",
         "command": "workbench.action.terminal.scrollDown",
         "when": "terminalFocus"
+    },
+
+    // =========================
+    // Project Manager
+    // =========================
+    {
+        "key": "shift+cmd+j",
+        "command": "workbench.view.extension.project-manager"
     }
 ]
