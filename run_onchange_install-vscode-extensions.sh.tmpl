@@ -1,0 +1,23 @@
+#!/bin/bash
+# extensions.txt: {{ include "dot_config/vscode/extensions.txt" | sha256sum }}
+
+set -eu
+
+extensions_file="{{ .chezmoi.homeDir }}/.config/vscode/extensions.txt"
+
+if ! command -v code &>/dev/null; then
+  echo "code command not found, skipping VS Code extensions sync"
+  exit 0
+fi
+
+# Install missing extensions
+comm -13 <(code --list-extensions | sort) <(sort "$extensions_file") | while read -r ext; do
+  echo "Installing: $ext"
+  code --install-extension "$ext" --force
+done
+
+# Uninstall extensions not in the list
+comm -23 <(code --list-extensions | sort) <(sort "$extensions_file") | while read -r ext; do
+  echo "Uninstalling: $ext"
+  code --uninstall-extension "$ext"
+done
