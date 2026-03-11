@@ -3,8 +3,7 @@
 # =========================
 font-family = "BlexMono Nerd Font"
 font-size = 14
-theme = Selenized Dark
-palette = 8=#626880
+theme = Solarized Dark Higher Contrast
 cursor-style = block
 mouse-hide-while-typing = true
 window-padding-balance = true
