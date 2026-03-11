@@ -143,12 +143,6 @@ if command -v starship >/dev/null 2>&1; then
   unset _STARSHIP_CACHE
 fi
 
-# zoxide
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
-  alias cd='z'
-fi
-
 # fzf（キーバインドと補完）
 if [[ -f "$_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh" ]]; then
   source "$_BREW_PREFIX/opt/fzf/shell/key-bindings.zsh"
@@ -189,6 +183,12 @@ fi
 
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=plain {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 {}'"
+
+# zoxide (must be initialized at the end of shell config)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+  alias cd='z'
+fi
 
 # Cleanup
 unset _BREW_PREFIX
