@@ -184,12 +184,6 @@ fi
 export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=plain {}'"
 export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 {}'"
 
-# zoxide (must be initialized at the end of shell config)
-if command -v zoxide >/dev/null 2>&1; then
-  eval "$(zoxide init zsh)"
-  alias cd='z'
-fi
-
 # Cleanup
 unset _BREW_PREFIX
 
@@ -198,3 +192,13 @@ unset _BREW_PREFIX
 # =============================================================================
 
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="$HOME/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# zoxide (must be initialized at the end of shell config)
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh)"
+  alias cd='z'
+fi
