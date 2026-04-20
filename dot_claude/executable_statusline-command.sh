@@ -18,19 +18,17 @@ fi
 
 output=""
 
-# Working directory (blue) - show last 2 path components
+# Line 1: Working directory (blue) + Git branch (green) + dirty count (red)
 if [ -n "$cwd" ]; then
     short_cwd=$(echo "$cwd" | awk -F/ '{if(NF>2) print $(NF-1)"/"$NF; else print $0}')
     output="\033[34m${short_cwd}\033[0m"
 fi
-
-# Git branch (green) + dirty count (red)
 [ -n "$git_branch" ] && output="${output}  \033[32m${git_branch}\033[0m${git_dirty}"
 
-# Model (yellow)
-[ -n "$model" ] && output="${output}  \033[33m${model}\033[0m"
+# Line 2: Model (yellow) + Context usage gauge
+line2=""
+[ -n "$model" ] && line2="\033[33m${model}\033[0m"
 
-# Context usage gauge
 if [ -n "$context_used" ]; then
     gauge_width=10
     filled=$(( context_used * gauge_width / 100 ))
@@ -47,7 +45,9 @@ if [ -n "$context_used" ]; then
     else
         color="\033[36m"
     fi
-    output="${output}  ${color}[${bar}] ${context_used}%\033[0m"
+    line2="${line2}  ${color}[${bar}] ${context_used}%\033[0m"
 fi
+
+[ -n "$line2" ] && output="${output}\n${line2}"
 
 printf "%b" "$output"

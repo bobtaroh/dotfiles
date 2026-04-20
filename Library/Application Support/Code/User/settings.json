@@ -210,5 +210,6 @@
     ],
     "projectManager.git.maxDepthRecursion": 3,
     "projectManager.git.ignoredFolders": ["node_modules", ".git"],
-    "projectManager.sortList": "Recent"
+    "projectManager.sortList": "Recent",
+    "workbench.colorTheme": "Dark Modern"
 }
